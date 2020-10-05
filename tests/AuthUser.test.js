@@ -1,6 +1,6 @@
 const request = require('supertest');
 const server = require('../app');
-
+const chalk = require('chalk')
 // authorized user tests
 const userInfoMock = {
     name: 'test',
@@ -19,12 +19,12 @@ describe('Authorized User Tests', () => {
         await request(server)
             .post('/users/register')
             .send(userInfoMock)
-            .expect(201);
+            .expect(201).then(console.log("Register Passed!!!!!"));
 
         const { body: loginRes } = await request(server)
             .post('/users/login')
             .send(userInfoMock)
-            .expect(200)
+            .expect(200).then(console.log("Login Passed!!!!!"))
 
         const { body: infoRes } = await request(server)
             .get('/api/v1/information')
