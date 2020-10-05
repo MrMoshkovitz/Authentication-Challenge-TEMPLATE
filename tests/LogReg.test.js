@@ -1,3 +1,7 @@
+const { colorConfig } = require("../helpers/colorHelper");
+const { stage, impText } = colorConfig
+
+
 const request = require('supertest');
 const server = require('../app');
 
@@ -27,6 +31,7 @@ describe('Register & Login Tests', () => {
 
     // user register
     test('User Can Register', async (done) => {
+        console.log(stage('User Can Register'))
         const { body: response } = await request(server)
             .post('/users/register')
             .send(userRegisterMock)
@@ -38,6 +43,8 @@ describe('Register & Login Tests', () => {
 
     // user login
     test('User Can Login', async (done) => {
+        console.log(stage('User Can Login'))
+
         await request(server)
             .post('/users/register')
             .send(userLoginMock)
@@ -56,6 +63,7 @@ describe('Register & Login Tests', () => {
 
     // user logout
     test('User Can Logout', async (done) => {
+        console.log(stage('User Can Logout'))
         await request(server)
             .post('/users/register')
             .send(userLogoutMock)
@@ -75,6 +83,7 @@ describe('Register & Login Tests', () => {
     })
 
     test('check unknown endpoint handler', async (done) => {
+        console.log(stage('Uknown Endpoint'))
         await request(server)
             .delete('/blabla')
             .expect(404)

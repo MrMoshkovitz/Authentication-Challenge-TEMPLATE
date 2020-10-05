@@ -130,12 +130,7 @@ const colorsMap = (type) => {
             logs("")
         break;
     }
-
 }
-
-
-
-
 
 
 morgan.token("protocol", function (req, res) {
@@ -166,40 +161,36 @@ morgan.token("originalUrl", function (req, res) {
 });
 
 const coloredMorgan = morgan((tokens, req, res) => {
-    let { subject, method, signs, status, text, impText, links } = colorConfig
+    let { subject, method, signs, status, text, impText, links, error } = colorConfig
 	let coloredLogArr = [
 		subject(`Request: `),
 		method(tokens.method(req, res)),
 		signs("=>"),
 		method(tokens["protocol"](req, res) + '://') + links(tokens["host"](req, res)) + links(tokens.url(req, res)),
-		status(tokens.status(req, res)),
-		" ",
-		text(tokens["time"](req, res)),
+        status(tokens.status(req, res)),
+        JSON.stringify(tokens["body"](req,res)).length > 2 ? impText(JSON.stringify(tokens["body"](req,res))) : null,
+		method(tokens["time"](req, res)),
 		status(tokens["response-time"](req, res))+ text("ms"),
-		text(tokens["date"](req, res)),
+		text(tokens["date"](req, res))
 	]
 	let coloredLogText;
 	switch (tokens.method(req,res)) {
 		case "POST":
 			coloredLogArr[1] = status(tokens.method(req, res))
-			coloredLogArr.push(impText(tokens["body"](req,res)))
-			coloredLogText = coloredLogArr.join(" ")
 			break;
 		case "PUT":
-			coloredLogArr[1] = subjet(tokens.method(req, res))
-			coloredLogArr.push(impText(tokens["body"](req,res)))
-			coloredLogText = coloredLogArr.join(" ")
+			coloredLogArr[1] = status(tokens.method(req, res))
 			
 			break;
 		case "DELETE":
 			coloredLogArr[1] = error(tokens.method(req, res))
-			coloredLogText = coloredLogArr.join(" ")
 		break;
 
 		default:
 			coloredLogText = coloredLogArr.join(" ")
 		break;
-	}
+    }
+    coloredLogText = coloredLogArr.join(" ")
 	return coloredLogText;
 });
 

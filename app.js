@@ -13,9 +13,8 @@ const saltRounds = 10;
 
 // GAl To Delete
 const { colorConfig, coloredMorgan, colorsMap } = require("./helpers/colorHelper");
-colorsMap()
-
-
+// colorsMap()
+const {impText, stage, signs, text } = colorConfig
 
 
 
@@ -33,12 +32,7 @@ let INFORMATION = [
 		info: "admin info",
 	},
 ];
-// let INFORMATION = [{user, info}]
 
-// console.log(USERS)
-// FORMATION [...{user, info},{}...],
-
-// app.use(morgan("dev"));
 app.use(coloredMorgan)
 app.use(express.json());
 app.get("/", (req, res) => {
@@ -46,14 +40,14 @@ app.get("/", (req, res) => {
 });
 app.post("/users/register", async (req, res) => {
 	let body = req.body;
-	let req_email = body.email;
-	let hashedPassword = await bcrypt.hash(req.body.password, 10)
+	console.log(impText(JSON.stringify(body)))
+	let hashedPassword = await bcrypt.hash(body.password, 10)
 
 
-	let exists = USERS.findIndex((user) => user.email == req_email);
+	let exists = USERS.findIndex((user) => user.email == body.email);
 
 	//Printing User Exists? 
-	(exists !== -1) ? console.log("This User Exists", body.name, req_email, {"Exists": exists}) : console.log("User Not Exists", exists)
+	(exists !== -1) ? console.log(text("This User Exists", body.name, body.email, {"Exists": exists})) : console.log(text("User Not Exists", exists))
 	
 	if(exists === -1) {
 		let newUserOBJ = {
@@ -62,7 +56,7 @@ app.post("/users/register", async (req, res) => {
 			password: hashedPassword,
 			isAdmin: body.isAdmin,
 		}
-		console.log(`Creating User Object ==> ${JSON.stringify(newUserOBJ)}`)
+		console.log(stage(`Creating User Object `), signs("==>"), text(JSON.stringify(newUserOBJ)))
 
 		let newInfoOBJ = {
 			name: req.body.name,
@@ -75,9 +69,9 @@ app.post("/users/register", async (req, res) => {
 		console.log(JSON.stringify({"New User": newUserOBJ}))
 		// console.log(JSON.stringify({"newInfoOBJ": newInfoOBJ}));
 		// console.log(JSON.stringify({"USERS": USERS}));
-		res.status(201).send("Register Success");
+		res.status(201).send({"message": "Register Success"});
 	} else {
-		res.status(409).send("user already exists");
+		res.status(409).send({"message": "user already exists"});
 	}
 });
 module.exports = app;
