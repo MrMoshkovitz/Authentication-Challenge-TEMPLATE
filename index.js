@@ -1,7 +1,7 @@
 /* write the code to run app.js here */
 const app = require("./app");
-const { colorConfig } = require("./helpers/colorHelper");
-const { subject, status } = colorConfig
+const { colorHelper } = require("./helpers/");
+const { subject, status } = colorHelper.colorConfig
 
 const port = process.env.PORT || 6060
 

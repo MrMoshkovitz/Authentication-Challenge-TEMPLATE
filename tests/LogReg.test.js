@@ -1,6 +1,5 @@
-const { colorConfig } = require("../helpers/colorHelper");
-const { stage, impText } = colorConfig
-
+const { colorHelper } = require("../helpers/");
+const { stage, impText, error, subject } = colorHelper.colorConfig
 
 const request = require('supertest');
 const server = require('../app');
@@ -25,13 +24,19 @@ const userLogoutMock = {
 }
 
 describe('Register & Login Tests', () => {
+    let i = 0
+    beforeAll(async () => console.log(stage("Register & Login Test")))
+    beforeEach(async () => {
+        i++;
+        console.log(stage("This Current Test Number: "), error(i))
+    }
+        )
     afterAll(async () => {
         await server.close();
     })
 
     // user register
     test('User Can Register', async (done) => {
-        console.log(stage('User Can Register'))
         const { body: response } = await request(server)
             .post('/users/register')
             .send(userRegisterMock)
@@ -43,7 +48,6 @@ describe('Register & Login Tests', () => {
 
     // user login
     test('User Can Login', async (done) => {
-        console.log(stage('User Can Login'))
 
         await request(server)
             .post('/users/register')
@@ -58,12 +62,15 @@ describe('Register & Login Tests', () => {
         expect(response.body.accessToken.length > 0).toBe(true)
         expect(response.body.refreshToken.length > 0).toBe(true)
         expect(response.body.userName).toBe(userLoginMock.name)
+        console.log(expect.getState().currentTestName);
+
         done();
     })
 
     // user logout
     test('User Can Logout', async (done) => {
-        console.log(stage('User Can Logout'))
+        console.log(subject('User Can Logout'), stage("Test"))
+
         await request(server)
             .post('/users/register')
             .send(userLogoutMock)
@@ -78,12 +85,13 @@ describe('Register & Login Tests', () => {
             .post('/users/logout')
             .send({ token: response.body.refreshToken })
             .expect(200)
-        expect(responseOut.message).toBe("User Logged Out Successfully")
+        
+            expect(responseOut.message).toBe("User Logged Out Successfully")
         done();
     })
 
     test('check unknown endpoint handler', async (done) => {
-        console.log(stage('Uknown Endpoint'))
+        console.log(subject('Uknown Endpoint'), stage("Test"))
         await request(server)
             .delete('/blabla')
             .expect(404)

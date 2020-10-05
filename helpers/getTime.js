@@ -13,5 +13,6 @@
 }
 
 
+const getTime = { getCurrentTime, getCurrentDate }
 
-module.exports = { getCurrentTime, getCurrentDate }
+module.exports =  {getTime}

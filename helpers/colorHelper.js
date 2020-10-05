@@ -1,7 +1,7 @@
 const chalk = require("chalk");
 const morgan = require("morgan");
 
-const getTime = require('./getTime')
+const { getTime } = require('./getTime')
 let {getCurrentTime, getCurrentDate} = getTime
 
 
@@ -196,5 +196,5 @@ const coloredMorgan = morgan((tokens, req, res) => {
 
 
 
-
-module.exports = {colorConfig, coloredMorgan, colorsMap}
+const colorHelper = {colorConfig, coloredMorgan, colorsMap}
+module.exports = {colorHelper}
