@@ -184,7 +184,7 @@ app.get("/api/v1/information", authenticateToken, (req, res) => {
 	let name = user.name
 
 	let info = INFORMATION.find((information) => information.name === name)
-	console.log(subject("Get Inforamtion"), success(JSON.stringify({ user:user, info:info})))
+	console.log(subject("Get Inforamtion"), success(JSON.stringify([{ user:user, info:info}])))
 	res.status(200).send([{ name:name, info:info}]);
 })
 

@@ -40,6 +40,7 @@ describe("Token expiration and refresh test", () => {
 			.get("/api/v1/information")
 			.set("authorization", `bearer ${loginRes.accessToken}`)
 			.expect(403);
+			console.log(error(JSON.stringify(loginRes)))
 
 		await request(server)
 			.post("/users/token")
