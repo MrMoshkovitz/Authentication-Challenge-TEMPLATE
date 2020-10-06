@@ -1,6 +1,8 @@
 const request = require('supertest');
 const server = require('../app');
-const chalk = require('chalk')
+const { colorHelper } = require("../helpers/");
+const { success, stage, error } = colorHelper.colorConfig
+
 // authorized user tests
 const userInfoMock = {
     name: 'test',
@@ -32,6 +34,14 @@ describe('Authorized User Tests', () => {
             .expect(200)
 
         expect(infoRes.length > 0).toBe(true)
+        console.log(stage("InfoRes"))
+        console.log(error(JSON.stringify(infoRes)))
+        console.log(stage("InfoRes.body"))
+        console.log(error(JSON.stringify(infoRes.body)))
+        console.log(stage("InfoRes[0]"))
+        console.log(success(JSON.stringify(infoRes[0])))
+
+
         expect(infoRes[0].user).toBe(userInfoMock.name)
 
         await request(server)

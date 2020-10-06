@@ -104,7 +104,7 @@ app.post("/users/login", async (req, res) => {
 		let refreshToken = REFRESH_TOKENS.find((refTok) => refTok.user.email === email);
 		
 		refreshToken = generateToken(user, RTOKEN_SECRET, "24h");
-		REFRESH_TOKENS.push({user, refreshToken});
+		REFRESH_TOKENS.push({name, user, refreshToken});
 		console.log("");
 		console.log(signs("<<====="), success(`Login Success`), signs("=====>>"));
 		console.log("");
@@ -185,7 +185,7 @@ app.get("/api/v1/information", authenticateToken, (req, res) => {
 
 	let info = INFORMATION.find((information) => information.name === name)
 	console.log(subject("Get Inforamtion"), success(JSON.stringify({ user:user, info:info})))
-	res.status(200).send([{ user:name, info:info}]);
+	res.status(200).send([{ name:name, info:info}]);
 })
 
 
