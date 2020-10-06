@@ -1,7 +1,5 @@
 const request = require('supertest');
 const server = require('../app');
-const { colorHelper } = require("../helpers/");
-const { success, stage, error } = colorHelper.colorConfig
 
 // authorized user tests
 const userInfoMock = {
@@ -18,37 +16,31 @@ describe('Authorized User Tests', () => {
     //authorized user can get info
     test('Authorized User Can Get Info', async (done) => {
 
-        await request(server)
+        const registerResponse = await request(server)
             .post('/users/register')
             .send(userInfoMock)
-            .expect(201);
 
-        const { body: loginRes } = await request(server)
+        expect(registerResponse.status).toBe(201)
+
+        const loginRes = await request(server)
             .post('/users/login')
             .send(userInfoMock)
-            .expect(200);
 
-        const { body: infoRes } = await request(server)
+        expect(loginRes.status).toBe(200)
+
+        const infoRes = await request(server)
             .get('/api/v1/information')
-            .set('authorization', `bearer ${loginRes.accessToken}`)
-            .expect(200)
+            .set('authorization', `bearer ${loginRes.body.accessToken}`)
 
-        expect(infoRes.length > 0).toBe(true)
-        console.log(stage("InfoRes"))
-        console.log(error(JSON.stringify(infoRes)))
-        console.log(stage("InfoRes.body"))
-        console.log(error(JSON.stringify(infoRes.body)))
-        console.log(stage("InfoRes[0]"))
-        console.log(success(JSON.stringify(infoRes[0])))
+        expect(infoRes.status).toBe(200)
+        expect(infoRes.body.length > 0).toBe(true)
+        expect(infoRes.body[0].name).toBe(userInfoMock.name)
 
-
-        expect(infoRes[0].user).toBe(userInfoMock.name)
-
-        await request(server)
+        const informationResponse = await request(server)
             .get('/api/v1/information')
             .set('authorization', 'bearer notValidToken')
-            .expect(403)
 
+        expect(informationResponse.status).toBe(403)
         done()
     })
 })

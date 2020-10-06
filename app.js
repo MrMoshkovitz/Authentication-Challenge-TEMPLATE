@@ -26,7 +26,7 @@ const {
 	method,
 } = colorConfig;
 
-
+const tokenRefreshTime = 10;
 
 let USERS = [
 	{
@@ -60,6 +60,7 @@ app.post("/users/register", async (req, res) => {
 	let hashedPassword = await bcrypt.hash(body.password, 10);
 
 	let exists = USERS.findIndex((user) => user.email == body.email);
+	//let exists = USERS.indexOf(body.email);
 
 	if (exists === -1) {
 		let newUserOBJ = {
@@ -100,11 +101,11 @@ app.post("/users/login", async (req, res) => {
 
 	let compared = await bcrypt.compare(password, user.password);
 	if (compared) {
-		let accessToken = generateToken(user, ATOKEN_SECRET, "30s");
+		let accessToken = generateToken(user, ATOKEN_SECRET, tokenRefreshTime);
 		let refreshToken = REFRESH_TOKENS.find((refTok) => refTok.user.email === email);
 		
 		refreshToken = generateToken(user, RTOKEN_SECRET, "24h");
-		REFRESH_TOKENS.push({name, user, refreshToken});
+		REFRESH_TOKENS.push({user, refreshToken});
 		console.log("");
 		console.log(signs("<<====="), success(`Login Success`), signs("=====>>"));
 		console.log("");
@@ -212,7 +213,7 @@ app.post("/users/token", async (req, res) => {
 		let user = decoded.user
 		console.log(stage("/users/token"), success(JSON.stringify(decoded.user)))
 
-		let accessToken = generateToken(user, ATOKEN_SECRET, '30s')
+		let accessToken = generateToken(user, ATOKEN_SECRET, tokenRefreshTime)
 		console.log(subject("Get User Token "), success(JSON.stringify({ accessToken: accessToken })))
 		res.status(200).send({ accessToken: accessToken });
 	})
