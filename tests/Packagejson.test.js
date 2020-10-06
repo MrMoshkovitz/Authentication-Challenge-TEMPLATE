@@ -8,6 +8,7 @@ const originalPackageJSON = {
     },
     dependencies: {
         bcrypt: "^5.0.0",
+        chalk: "^4.1.0",
         express: "^4.17.1",
         jsonwebtoken: "^8.5.1",
         morgan: "^1.10.0",
@@ -18,6 +19,8 @@ const originalPackageJSON = {
         supertest: "^4.0.2"
     }
 }
+
+  
 
 describe('PackageJSON tests', () => {
     afterAll(async () => {
