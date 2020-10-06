@@ -38,7 +38,16 @@ let USERS = [
 ];
 let INFORMATION = [];
 let REFRESH_TOKENS = [];
-
+let OPTIONS =
+    [
+        { method: "post", path: "/users/register", description: "Register, required: email, user, password", example: { email: "user@email.com", name: "user", password: "password" } },
+        { method: "post", path: "/users/login", description: "Login, required: valid email and password", example: { email: "user@email.com", password: "password" } },
+        { method: "post", path: "/users/token", description: "Renew access token, required: valid refresh token", example: { token: "Refresh Token" } },
+        { method: "post", path: "/users/tokenValidate", description: "Access Token Validation, required: valid access token", example: { authorization: "Bearer Your Access Token" } },
+        { method: "get", path: "/api/v1/information", description: "Access user's information, required: valid access token", example: { authorization: "Bearer Your Access Token" } },
+        { method: "post", path: "/users/logout", description: "Logout, required: access token", example: { token: "Your Refresh Token" } },
+        { method: "get", path: "/api/v1/users", description: "Get users DB, required: Valid access token of admin user", example: { authorization: "Bearer Your Access Token" } }
+    ]
 app.use(coloredMorgan);
 app.use(express.json());
 app.get("/", (req, res) => {
@@ -96,7 +105,6 @@ app.post("/users/login", async (req, res) => {
 		
 		refreshToken = generateToken(user, RTOKEN_SECRET, "24h");
 		REFRESH_TOKENS.push({user, refreshToken});
-		// let RTOKEN_SECRET = generateToken(user, ATOKEN_SECRET, '24')
 		console.log("");
 		console.log(signs("<<====="), success(`Login Success`), signs("=====>>"));
 		console.log("");
@@ -143,9 +151,8 @@ app.post("/users/logout", async (req, res) => {
 
 function authenticateToken (req, res, next) {
 	console.log(signs("<<====="), stage("authenticateToken"), signs("=====>>"));
-	// const authHeader = req.header['authorization']
-	const authHeader = req.headers.authorization
-	const token = authHeader && authHeader.split(' ')[1]
+	let authorizationHeader = req.headers.authorization
+	let token = authorizationHeader && authorizationHeader.split(' ')[1]
 	console.log(subject("Authenticate Token"), success(token))
 
 	// return token
@@ -182,12 +189,6 @@ app.get("/api/v1/information", authenticateToken, (req, res) => {
 })
 
 
-// POST path: "/users/token", description: Renew access token,
-
-// request template: body: {token: -refresh token-}.
-// server responses: status 200, body: {accessToken} | status 401 "Refresh Token Required" | status 403 "Invalid Refresh Token".
-
-
 app.post("/users/token", async (req, res) => {
 	console.log(signs("||||||||||||||||||||||||||||||||||||||||||||||||||||||"))
 	console.log(signs("<<====="), stage("User Token Endpoint"), signs("=====>>"));
@@ -220,26 +221,49 @@ app.post("/users/token", async (req, res) => {
 
 
 
-
-
-
-
-
 app.get("/api/v1/users", authenticateToken, (req, res) => {
 	console.log(signs("<<====="), stage("Users List Endpoint"), signs("=====>>"));
 	let user = req.user.user
 	let isAdmin = user.isAdmin
 	if(isAdmin) res.status(200).send(USERS)
 	res.status(400).send({message: "User Is Not Privlege To Do This"})
-
-	// // if(isAdmin) res.status(200).send({USERS: USERS})
-	// let info = INFORMATION.find((information) => information.name === name)
-	// console.log(subject("Get Inforamtion"), success(JSON.stringify({ user:user, info:info})))
-	// res.status(200).send([{ user:name, info:info}]);
 })
 
 
+app.options("/", (req, res) => {
+	let authorizationHeader = req.headers.authorization
+	console.log(subject("authorizationHeader"), impText(authorizationHeader))
+	let token = authorizationHeader && authorizationHeader.split(" ")[1];
+	console.log(subject("Token"), impText(token))
+	if(token == null)  res.status(200).send([OPTIONS[0], OPTIONS[1]])
+	jwt.verify(token, ATOKEN_SECRET, (err, decoded) => {
+		if(err) {
+			console.log("")
+			console.log("")
+			console.log(error("User Was Not Verified"))
+			return res.status(200).send([OPTIONS[0], OPTIONS[1], OPTIONS[2]])
+		}
+		let { user } = decoded
+		let isAdmin = user.isAdmin
+		if(isAdmin) {
+			console.log(subject("This Is an Admin User"), success(JSON.stringify(OPTIONS)))
+			res.status(200).send(OPTIONS)
+		}
+		else {
+			let newOptions = OPTIONS.filter((option, index) => {
+				while( index <= 5) return option
+			})
+			console.log(subject("Authenticated User"), success(JSON.stringify(newOptions)), impText(JSON.stringify({Length: newOptions.length})))
+			res.status(200).send(newOptions)
 
+		}
+	})
+	
+	// else return res.status(200).send([...OPTIONS])
+	// else  res.status(200).send([OPTIONS[0], OPTIONS[1]])
+
+	// res.status(200).send([...OPTIONS])
+})
 
 app.use((req, res) => {
     res.status(404).send('unknown endpoint')
