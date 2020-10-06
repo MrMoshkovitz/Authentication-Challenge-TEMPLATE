@@ -1,6 +1,7 @@
 const request = require('supertest');
 const server = require('../app');
-
+const { colorHelper } = require("../helpers/");
+const { stage, error } = colorHelper.colorConfig
 //Admin tests
 const userAdminMock = {
     name: 'admin',
@@ -40,6 +41,13 @@ describe('Admin Tests', () => {
             .get('/api/v1/users')
             .set('authorization', `Bearer ${adminLoginRes.accessToken}`)
             .expect(200)
+
+            console.log(stage("======================Admin Test================"), stage("|||||||||||||||||||||||||||||||||"), stage("|||||||||||||||||||||||||||||||||"),stage("|||||||||||||||||||||||||||||||||"))
+            console.log(stage("|||||||||||||||||||||||||||||||||"))
+            console.log(stage("|||||||||||||||||||||||||||||||||"))
+            console.log(stage("><><><><><><><><><><><><><><><><><><>"))
+            console.log(error(JSON.stringify(getAllUsersRes)))
+            expect(getAllUsersRes[0].email).toBe(userAdminMock.email)
 
         expect(getAllUsersRes[0].email).toBe(userAdminMock.email)
         expect(getAllUsersRes.length > 0).toBe(true)

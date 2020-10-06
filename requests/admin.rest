@@ -1,0 +1,15 @@
+###
+GET  http://localhost:6060/ HTTP/1.1
+
+###
+GET  http://localhost:6060/api/v1/information HTTP/1.1
+Authorization: Bearer eeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoiZ2FsQGdtYWlsLmNvbSIsIm5hbWUiOiJnbW9zaGtvIiwicGFzc3dvcmQiOiIkMmIkMTAkTWhMdDEwdThoN0FWRklwU3A0ZGUuZVVuUGIwcU1HMVRRYUNzSjUwZGQ4NENjTkhHTndoOHEiLCJpc0FkbWluIjpmYWxzZX0sImlhdCI6MTYwMTk4MzQxMiwiZXhwIjoxNjAxOTgzNDQyfQ.x_f_-JSLAlJ2qZDfSHYCcANXzbdiBwRKZHsGt6BxbhU
+
+
+# Content-Type: application/json
+
+# {
+#     "email": "gal@gmail.com",
+# 	"user": "gmoshko",
+# 	"password": "Gmoshko4"
+# }

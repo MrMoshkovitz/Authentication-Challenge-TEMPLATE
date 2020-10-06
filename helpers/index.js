@@ -5,5 +5,5 @@ const {generateToken} = require('./generateToken')
 module.exports = {
     "colorHelper":colorHelper,
     "getTime":getTime,
-    "generateToken":generateToken
+    "generateToken": generateToken
 }

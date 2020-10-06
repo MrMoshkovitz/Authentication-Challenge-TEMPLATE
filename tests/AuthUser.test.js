@@ -19,12 +19,12 @@ describe('Authorized User Tests', () => {
         await request(server)
             .post('/users/register')
             .send(userInfoMock)
-            .expect(201).then(console.log("Register Passed!!!!!"));
+            .expect(201);
 
         const { body: loginRes } = await request(server)
             .post('/users/login')
             .send(userInfoMock)
-            .expect(200).then(console.log("Login Passed!!!!!"))
+            .expect(200);
 
         const { body: infoRes } = await request(server)
             .get('/api/v1/information')
